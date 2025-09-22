@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import { CheckCircle, Eye, XCircle } from 'lucide-react';
+import { CheckCircle, XCircle } from 'lucide-react';
 import React, { useState } from 'react';
 import { route } from 'ziggy-js';
 
@@ -64,7 +64,7 @@ function OrderDetailsModal({ order, closeModal }: { order: Order; closeModal: ()
                         ✕
                     </button>
                 </div>
-                
+
                 <div className="mb-6 grid grid-cols-2 gap-4">
                     <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
                         <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300">Mesa</h3>
@@ -148,7 +148,7 @@ export default function Index({ orders }: OrdersProps) {
             alert('No se puede resolver un pedido cancelado.');
             return;
         }
-        
+
         router.patch(route('admin.orders.resolve', order.id), {}, {
             preserveState: true,
             preserveScroll: true,
@@ -160,7 +160,7 @@ export default function Index({ orders }: OrdersProps) {
             alert('No se puede cancelar un pedido ya pagado.');
             return;
         }
-        
+
         if (confirm('¿Estás seguro de que quieres cancelar este pedido?')) {
             router.patch(route('admin.orders.cancel', order.id), {}, {
                 preserveState: true,
@@ -254,7 +254,7 @@ export default function Index({ orders }: OrdersProps) {
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         {orders.data.length === 0 && (
                             <div className="py-8 text-center">
                                 <p className="text-gray-500 dark:text-gray-400">No hay pedidos registrados.</p>
