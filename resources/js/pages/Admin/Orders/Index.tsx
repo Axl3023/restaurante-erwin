@@ -140,7 +140,16 @@ function CheckoutModal({ order, onClose }: { order: Order; onClose: () => void }
     const [customerEmail, setCustomerEmail] = useState('');
     const [customerPhone, setCustomerPhone] = useState('');
     const [customerAddress, setCustomerAddress] = useState('');
-    const [customerFound, setCustomerFound] = useState<boolean>(false);
+    const [customerFound, setCustomerFound] = useState(false);
+    const [hasSearched, setHasSearched] = useState(false);
+
+    const expectedLen = docType === 'DNI' ? 8 : 11;
+    const handleDocChange = (v: string) => {
+        const onlyDigits = v.replace(/\D/g, '').slice(0, expectedLen);
+        setDocNumber(onlyDigits);
+        setCustomerFound(false);
+        setHasSearched(false); // si cambias el nro, aún no “buscaste”
+    };
 
     // Receipt
     const [receiptType, setReceiptType] = useState<'boleta' | 'factura'>('boleta');
@@ -162,17 +171,29 @@ function CheckoutModal({ order, onClose }: { order: Order; onClose: () => void }
     // Buscar cliente por doc_number
     const searchCustomer = async () => {
         if (!docNumber) return;
+        setHasSearched(true);
+
         try {
-            const url = route('admin.customers.search', { doc_number: docNumber });
-            const res = await fetch(url);
+            const url = route('admin.customers.search') + `?doc_number=${encodeURIComponent(docNumber)}`;
+            const res = await fetch(url, {
+                headers: { Accept: 'application/json' },
+                credentials: 'same-origin',
+            });
+
+            if (!res.ok) {
+                console.error('GET /customers/search failed', res.status, await res.text());
+                setCustomerFound(false);
+                return;
+            }
+
             const data = await res.json();
-            if (data.found) {
+            if (data?.found) {
                 setCustomerFound(true);
                 setDocType(data.customer.doc_type);
-                setCustomerName(data.customer.name || '');
-                setCustomerEmail(data.customer.email || '');
-                setCustomerPhone(data.customer.phone || '');
-                setCustomerAddress(data.customer.address || '');
+                setCustomerName(data.customer.name ?? '');
+                setCustomerEmail(data.customer.email ?? '');
+                setCustomerPhone(data.customer.phone ?? '');
+                setCustomerAddress(data.customer.address ?? '');
             } else {
                 setCustomerFound(false);
                 setCustomerName('');
@@ -182,12 +203,14 @@ function CheckoutModal({ order, onClose }: { order: Order; onClose: () => void }
             }
         } catch (e) {
             console.error(e);
+            setCustomerFound(false);
         }
     };
 
     // Crear cliente inline
     const createCustomer = async () => {
         if (!docNumber || !customerName) return alert('Complete documento y nombre.');
+
         try {
             const res = await fetch(route('admin.customers.store'), {
                 method: 'POST',
@@ -195,7 +218,9 @@ function CheckoutModal({ order, onClose }: { order: Order; onClose: () => void }
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
                     'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || '',
+                    Accept: 'application/json',
                 },
+                credentials: 'same-origin',
                 body: JSON.stringify({
                     doc_type: docType,
                     doc_number: docNumber,
@@ -205,13 +230,24 @@ function CheckoutModal({ order, onClose }: { order: Order; onClose: () => void }
                     address: customerAddress,
                 }),
             });
-            const data = await res.json();
-            if (data.ok) {
+
+            if (res.ok) {
+                const data = await res.json();
                 setCustomerFound(true);
+                setHasSearched(true);
                 alert('Cliente creado.');
-            } else {
-                alert('No se pudo crear el cliente.');
+                return;
             }
+
+            if (res.status === 422) {
+                const { errors } = await res.json();
+                const first = Object.values(errors || {}).flat()[0] as string | undefined;
+                alert(first || 'Datos inválidos.');
+                return;
+            }
+
+            console.error('POST /customers error', res.status, await res.text());
+            alert('No se pudo crear el cliente.');
         } catch (e) {
             console.error(e);
             alert('Error creando cliente.');
@@ -248,7 +284,7 @@ function CheckoutModal({ order, onClose }: { order: Order; onClose: () => void }
             };
         }
 
-        // 👇 Importante: no pongas onSuccess que cierre el modal. 
+        // 👇 Importante: no pongas onSuccess que cierre el modal.
         // Deja que Inertia procese el Inertia::location del backend (full redirect).
         router.post(route('admin.orders.checkout', order.id), payload, {
             onError: () => alert('No se pudo grabar la venta. Revisa mensajes en la parte superior o el log.'),
@@ -359,7 +395,7 @@ function CheckoutModal({ order, onClose }: { order: Order; onClose: () => void }
                                 <div className="flex gap-2 md:col-span-4">
                                     <input
                                         value={docNumber}
-                                        onChange={(e) => setDocNumber(e.target.value)}
+                                        onChange={(e) => handleDocChange(e.target.value)}
                                         placeholder={docType === 'DNI' ? 'DNI (8)' : 'RUC (11)'}
                                         className="w-full rounded-md border p-2 dark:bg-gray-800"
                                     />
@@ -400,7 +436,7 @@ function CheckoutModal({ order, onClose }: { order: Order; onClose: () => void }
                                     />
                                 </div>
                             </div>
-                            {!customerFound && docNumber && (
+                            {hasSearched && !customerFound && docNumber && (
                                 <div className="mt-2 text-xs text-amber-600 dark:text-amber-400">
                                     No existe cliente con ese documento. Puedes crearlo aquí mismo.
                                     <button onClick={createCustomer} className="ml-2 rounded bg-amber-600 px-2 py-1 text-white">
