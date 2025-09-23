@@ -438,10 +438,10 @@ function CheckoutModal({ order, onClose }: { order: Order; onClose: () => void }
                             </div>
                             {hasSearched && !customerFound && docNumber && (
                                 <div className="mt-2 text-xs text-amber-600 dark:text-amber-400">
-                                    No existe cliente con ese documento. Puedes crearlo aquí mismo.
-                                    <button onClick={createCustomer} className="ml-2 rounded bg-amber-600 px-2 py-1 text-white">
+                                    No existe cliente con ese documento. Puedes crearlo aquí mismo llenando los datos.
+                                    {/* <button onClick={createCustomer} className="ml-2 rounded bg-amber-600 px-2 py-1 text-white">
                                         Crear cliente
-                                    </button>
+                                    </button> */}
                                 </div>
                             )}
                         </div>
