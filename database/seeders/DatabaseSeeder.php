@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             RolesAndPermissionsSeeder::class,
             UserSeeder::class,
             RestaurantSeeder::class,
+            CustomerSeeder::class,
         ]);
     }
 }

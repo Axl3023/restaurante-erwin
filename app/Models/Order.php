@@ -12,6 +12,10 @@ class Order extends Model
 
     protected $fillable = ['user_id', 'table_id', 'total', 'status'];
 
+    protected $casts = [
+        'total' => 'float',
+    ];
+
     // Un pedido pertenece a un mesero (User)
     public function user()
     {
@@ -28,5 +32,15 @@ class Order extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class)->withPivot('quantity', 'price')->withTimestamps();
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function sale()
+    {
+        return $this->hasOne(Sale::class);
     }
 }

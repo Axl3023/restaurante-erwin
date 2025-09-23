@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
+use App\Http\Controllers\Admin\SaleController as AdminSaleController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\POS\OrderController;
 use App\Http\Controllers\POS\PosController;
@@ -24,9 +26,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('products', ProductController::class);
         Route::resource('tables', TableController::class);
         Route::resource('orders', AdminOrderController::class);
+
+        Route::post('/orders/{order}/checkout', [AdminOrderController::class, 'checkout'])->name('orders.checkout');
+
         // Rutas adicionales para pedidos
         Route::patch('/orders/{order}/resolve', [AdminOrderController::class, 'resolve'])->name('orders.resolve');
         Route::patch('/orders/{order}/cancel', [AdminOrderController::class, 'cancel'])->name('orders.cancel');
+
+        // Clientes (search y alta inline)
+        Route::get('/customers/search', [AdminCustomerController::class, 'search'])->name('customers.search');
+        Route::post('/customers', [AdminCustomerController::class, 'store'])->name('customers.store');
+
+        // Ventas
+        Route::get('/sales/{sale}', [AdminSaleController::class, 'show'])->name('sales.show');
+        Route::get('/sales/{sale}/pdf', [AdminSaleController::class, 'pdf'])->name('sales.pdf');
     });
 
     // --- Grupo de Rutas para Punto de Venta (Meseros y Administradores) ---

@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
             $table->foreignId('user_id')->comment('Mesero que tomó la orden')->constrained('users');
             $table->foreignId('table_id')->constrained('tables');
