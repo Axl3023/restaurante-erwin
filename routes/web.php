@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
@@ -26,7 +27,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('products', ProductController::class);
         Route::resource('tables', TableController::class);
         Route::resource('orders', AdminOrderController::class);
-
+        Route::resource('roles', RoleController::class)->except(['show']);
         Route::post('/orders/{order}/checkout', [AdminOrderController::class, 'checkout'])->name('orders.checkout');
 
         // Rutas adicionales para pedidos

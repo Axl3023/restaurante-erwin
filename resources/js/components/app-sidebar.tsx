@@ -5,7 +5,8 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { dashboard } from '@/routes';
 import { type NavItem, type SharedData } from '@/types'; // Asegúrate que SharedData incluya los roles del usuario
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Printer, Tags, Utensils, Table, ShoppingCart } from 'lucide-react';
+// arriba, donde importas íconos
+import { BookOpen, Folder, LayoutGrid, Printer, Tags, Utensils, Table, ShoppingCart, Shield } from 'lucide-react';
 import { route } from 'ziggy-js';
 import AppLogo from './app-logo';
 
@@ -67,6 +68,12 @@ export function AppSidebar() {
             href: route('admin.orders.index'),
             icon: ShoppingCart,
         });
+        mainNavItems.push({
+            title: 'Roles',
+            href: route('admin.roles.index'),
+            icon: Shield,
+        });
+
     }
 
     return (
