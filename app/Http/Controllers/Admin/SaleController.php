@@ -49,8 +49,9 @@ class SaleController extends Controller
         $sale->load(['order.products', 'customer', 'order.user', 'order.table']);
 
         $pdf = Pdf::loadView('pdf.sale', compact('sale'))->setPaper('a4');
-        $filename = "{$sale->series}-{$sale->number}.pdf";
+        $filename = "{$sale->series}-" . str_pad((string) $sale->number, 8, '0', STR_PAD_LEFT) . ".pdf";
 
-        return $pdf->download($filename);
+        // Muestra el PDF en el navegador
+        return $pdf->stream($filename);
     }
 }

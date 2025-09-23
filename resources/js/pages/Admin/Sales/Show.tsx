@@ -120,14 +120,12 @@ export default function Show({ sale }: SaleProps) {
                             </div>
                         </div>
 
-                        <div className="mt-6 flex justify-end">
-                            <Link
-                                href={route('admin.sales.pdf', sale.id)}
-                                className="rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
-                            >
-                                Ver/Descargar PDF
-                            </Link>
-                        </div>
+                        <button
+                        onClick={() => window.open(route('admin.sales.pdf', sale.id), '_blank', 'noopener')}
+                        className="rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
+                        >
+                        Ver/Descargar PDF
+                        </button>
                     </div>
                 </div>
             </div>

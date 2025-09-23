@@ -231,27 +231,30 @@ function CheckoutModal({ order, onClose }: { order: Order; onClose: () => void }
 
     const submitCheckout = () => {
         if (!confirm('¿Desea grabar venta?')) return;
-        // Armamos payload
+
         const payload: any = {
             type: receiptType,
-            payments: payments.map((p) => ({ method: p.method, amount: Number(p.amount), reference: p.reference })),
+            payments: payments.map(p => ({ method: p.method, amount: Number(p.amount), reference: p.reference })),
         };
 
         if (docNumber) {
             payload.customer = {
-                doc_type: docType,
-                doc_number: docNumber,
-                name: customerName || undefined,
-                email: customerEmail || undefined,
-                phone: customerPhone || undefined,
-                address: customerAddress || undefined,
+            doc_type: docType,
+            doc_number: docNumber,
+            name: customerName || undefined,
+            email: customerEmail || undefined,
+            phone: customerPhone || undefined,
+            address: customerAddress || undefined,
             };
         }
 
+        // 👇 Importante: no pongas onSuccess que cierre el modal. 
+        // Deja que Inertia procese el Inertia::location del backend (full redirect).
         router.post(route('admin.orders.checkout', order.id), payload, {
             onError: () => alert('No se pudo grabar la venta. Revisa mensajes en la parte superior o el log.'),
         });
-    };
+        };
+
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
