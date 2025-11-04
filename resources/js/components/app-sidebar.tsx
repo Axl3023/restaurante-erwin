@@ -6,7 +6,7 @@ import { dashboard } from '@/routes';
 import { type NavItem, type SharedData } from '@/types'; // Asegúrate que SharedData incluya los roles del usuario
 import { Link, usePage } from '@inertiajs/react';
 // arriba, donde importas íconos
-import { BookOpen, Folder, LayoutGrid, Printer, Tags, Utensils, Table, ShoppingCart, Shield } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Printer, Tags, Utensils, Table, ShoppingCart, Shield, Users } from 'lucide-react';
 import { route } from 'ziggy-js';
 import AppLogo from './app-logo';
 
@@ -73,7 +73,11 @@ export function AppSidebar() {
             href: route('admin.roles.index'),
             icon: Shield,
         });
-
+        mainNavItems.push({
+            title: 'Usuarios',
+            href: route('admin.users.index'),
+            icon: Users,
+        });
     }
 
     return (

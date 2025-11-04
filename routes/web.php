@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\Admin\SaleController as AdminSaleController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\POS\OrderController;
 use App\Http\Controllers\POS\PosController;
@@ -41,6 +42,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Ventas
         Route::get('/sales/{sale}', [AdminSaleController::class, 'show'])->name('sales.show');
         Route::get('/sales/{sale}/pdf', [AdminSaleController::class, 'pdf'])->name('sales.pdf');
+
+        Route::resource('users', AdminUserController::class);
+        Route::patch('users/{id}/restore', [AdminUserController::class, 'restore'])->name('users.restore');
     });
 
     // --- Grupo de Rutas para Punto de Venta (Meseros y Administradores) ---
