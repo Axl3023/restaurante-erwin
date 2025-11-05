@@ -17,6 +17,8 @@ return new class extends Migration
             $table->integer('stock');
             $table->decimal('unit_price', 10, 2);
             $table->string('unit_measure');
+            $table->integer('minimum_stock')->default(0);
+            $table->integer('maximum_stock')->default(0);
             $table->timestamps();
         });
     }

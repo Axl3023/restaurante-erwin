@@ -16,8 +16,23 @@ class Supply extends Model
         'unit_price' => 'decimal:2',
     ];
 
+    protected $appends = ['is_alert'];
+
+    public function getIsAlertAttribute(): bool
+    {
+        $min = (int) ($this->minimum_stock ?? 0);
+        return $min > 0 && (int)$this->stock <= $min;
+    }
+
+    public function scopeInAlert($q)
+    {
+        return $q->where('minimum_stock', '>', 0)
+                 ->whereColumn('stock', '<=', 'minimum_stock');
+    }
+    
     public function details()
     {
         return $this->hasMany(WarehouseEntryDetail::class, 'supply_id');
     }
+
 }

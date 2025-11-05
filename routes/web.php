@@ -13,6 +13,7 @@ use App\Http\Controllers\POS\OrderController;
 use App\Http\Controllers\POS\PosController;
 use App\Http\Controllers\POS\TableController;
 use App\Http\Controllers\Admin\SupplyController;
+use App\Http\Controllers\Admin\SupplyStockController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -50,12 +51,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
         Route::get('/reports/sales/pdf', [ReportController::class, 'salesPdf'])->name('reports.sales.pdf');
+
+        // Rutas para gestión de almacén
         Route::get('/warehouse-entries',        [SupplyController::class, 'index'])->name('entries.index');
         Route::get('/warehouse-entries/create', [SupplyController::class, 'create'])->name('entries.create');
         Route::post('/warehouse-entries',       [SupplyController::class, 'store'])->name('entries.store');
         Route::get('/warehouse-entries/{warehouseEntry}/edit', [SupplyController::class, 'edit'])->name('entries.edit');
         Route::put('/warehouse-entries/{warehouseEntry}',      [SupplyController::class, 'update'])->name('entries.update');
         Route::delete('/warehouse-entries/{warehouseEntry}',   [SupplyController::class, 'destroy'])->name('entries.destroy');
+
+        // Rutas para gestión de stock de insumos
+        Route::get('/supplies/stock', [SupplyStockController::class, 'index'])->name('supplies.stock.index');
+        Route::patch('/supplies/{supply}/stock', [SupplyStockController::class, 'update'])->name('supplies.stock.update');
+        Route::get('/supplies/stock/alerts', [SupplyStockController::class, 'alerts'])->name('supplies.stock.alerts');
     });
 
     // --- Grupo de Rutas para Punto de Venta (Meseros y Administradores) ---
