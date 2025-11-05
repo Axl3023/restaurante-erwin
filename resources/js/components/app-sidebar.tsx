@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { dashboard } from '@/routes';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BarChart3, BookOpen, Folder, LayoutGrid, Printer, Shield, ShoppingCart, Table, Tags, Users, Utensils } from 'lucide-react';
+import { BarChart3, BookOpen, Folder, LayoutGrid, Printer, Shield, ShoppingCart, Table, Tags, Users, Utensils, Warehouse } from 'lucide-react';
 import { route } from 'ziggy-js';
 import AppLogo from './app-logo';
 
@@ -32,6 +32,7 @@ export function AppSidebar() {
             { title: 'Pedidos', href: route('admin.orders.index'), icon: ShoppingCart },
             { title: 'Roles', href: route('admin.roles.index'), icon: Shield },
             { title: 'Usuarios', href: route('admin.users.index'), icon: Users },
+            { title: 'Almacén', href: route('admin.entries.index'), icon: Warehouse },
             {
                 title: 'Reportes',
                 icon: BarChart3,

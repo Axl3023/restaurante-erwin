@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\POS\OrderController;
 use App\Http\Controllers\POS\PosController;
 use App\Http\Controllers\POS\TableController;
+use App\Http\Controllers\Admin\SupplyController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -49,6 +50,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
         Route::get('/reports/sales/pdf', [ReportController::class, 'salesPdf'])->name('reports.sales.pdf');
+        Route::get('/warehouse-entries',        [SupplyController::class, 'index'])->name('entries.index');
+        Route::get('/warehouse-entries/create', [SupplyController::class, 'create'])->name('entries.create');
+        Route::post('/warehouse-entries',       [SupplyController::class, 'store'])->name('entries.store');
+        Route::get('/warehouse-entries/{warehouseEntry}/edit', [SupplyController::class, 'edit'])->name('entries.edit');
+        Route::put('/warehouse-entries/{warehouseEntry}',      [SupplyController::class, 'update'])->name('entries.update');
+        Route::delete('/warehouse-entries/{warehouseEntry}',   [SupplyController::class, 'destroy'])->name('entries.destroy');
     });
 
     // --- Grupo de Rutas para Punto de Venta (Meseros y Administradores) ---
@@ -70,5 +77,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
